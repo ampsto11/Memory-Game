@@ -1,7 +1,19 @@
 /*
  * Create a list that holds all of your cards
  */
+let cards = ["fa-diamond", "fa-diamond",
+             "fa-paper-plane-o", "fa-paper-plane-o",
+             "fa-anchor","fa-anchor",
+             "fa-bolt", "fa-bolt",
+             "fa-cube", "fa-cube",
+             "fa-anchor", "fa-anchor",
+             "fa-leaf", "fa-leaf",
+             "fa-bicycle", "fa-bicycle"];
 
+function makeCard(card) {
+    return '<li class="card" data-card="$(card)"><i class="fa $(cards)"></i></li>';
+    console.log(makeCard)
+}
 
 /*
  * Display the cards on the page
@@ -9,6 +21,9 @@
  *   - loop through each card and create its HTML
  *   - add each card's HTML to the page
  */
+
+
+
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -36,3 +51,51 @@ function shuffle(array) {
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
+
+ function startGame() {
+   const deck = document.querySelector('.deck');
+
+   const cardHTML = shuffle(cards).map(function(card){
+   return makeCard(card);
+   });
+   moves = 0;
+   //moveCounter.innerHTML = moves;
+
+   deck.innerHTML = cardHTML.join('');
+ }
+
+ startGame();
+
+var allCards = document.querySelectorAll('.card');
+var openCards = [];
+var moves = 0;
+var moveCounter = document.querySelector('.moves');
+
+allCards.forEach(function(card){
+   card.addEventListener('click', function(e){
+     if (!card.classList.contains('open') && !card.classList.contains('show') && !card.classList.contains('match')){
+       openCards.push(card);
+       card.classList.add('open', 'show');
+
+       if (openCards.length == 2){
+         if (openCards[0].dataset.card == openCards[1].dataset.card){
+           openCards[0].classList.add('.match', '.open', '.show');
+
+           openCards[1].classList.add('.match', '.open', '.show');
+
+           openCards = [];
+         } else {
+           setTimeout(function(){
+             openCards.forEach(function(card){
+             card.classList.remove('open', 'show');
+         });
+         console.log('allCards');
+         openCards = [];
+        }, 1000);
+      }
+      moves += 1;
+      moveCounter.innerText = moves;
+    }
+    }
+   });
+ });
