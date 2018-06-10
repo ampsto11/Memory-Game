@@ -10,6 +10,38 @@ let cards = ["fa-diamond", "fa-diamond",
              "fa-leaf", "fa-leaf",
              "fa-bicycle", "fa-bicycle"];
 
+//game timer functions and variables
+let sec = 0;
+let min = 0;
+let timer;
+
+startTimer function() { // starts the timer and sets the interval for it's count
+  timer = setInterval(gameTimer, 1000);
+}
+
+stopTimer function(){
+  clearInterval(timer);
+  sec = 0;
+  min = 0;
+}
+
+gameTimer function (){  //adds secs and minutes to html class .gameTimer
+  sec++
+
+  if (sec < 10) {
+    sec = '0${sec}';
+  }
+
+  if (sec >= 60) {
+    min++
+    sec = "00";
+  }
+  document.querySelector('game-timer').innerHTML = "0" + min + ":" + sec;
+}
+
+
+
+//creates card element html to use in grid
 function makeCard(card) {
     return `<li class="card" data-card="${card}"><i class="fa ${card}"></i></li>`;
 }
@@ -54,15 +86,15 @@ function shuffle(array) {
 
  function startGame() {
    let deck = document.querySelector('.deck');
-   const cardHTML = shuffle(cards).map(function(card){
+   const cardHTML = shuffle(cards).map(function(card){  // shuffles cards and creates grid for cards on page
        return makeCard(card);
    });
 
-   deck.innerHTML = cardHTML.join('');
+   deck.innerHTML = cardHTML.join('');  //actually adds html to pages using data from makeCard
  }
 startGame();
 
-let allCards = document.querySelectorAll('.card');
+let allCards = document.querySelectorAll('.card'); // grabs all the cards by their class .card
 let openCards = [];
 
 allCards.forEach(function(card){
@@ -81,13 +113,13 @@ allCards.forEach(function(card){
              openCards[1].classList.add('.open');
              openCards[1].classList.add('.show');
 
-             openCards = [];
-           } else {
+             openCards = []; //clears openCards for the rest of the function
+           } else { //runs when cards don't match. can still click more than 2 cards if clicked quickly
              setTimeout(function(){
              openCards.forEach(function(card){
              card.classList.remove('open', 'show');
          });
-         openCards = [];
+         openCards = []; //clears openCards after a non-match
         }, 1000);
       }
      }
