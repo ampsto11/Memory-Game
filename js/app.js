@@ -6,13 +6,12 @@ let cards = ["fa-diamond", "fa-diamond",
              "fa-anchor","fa-anchor",
              "fa-bolt", "fa-bolt",
              "fa-cube", "fa-cube",
-             "fa-anchor", "fa-anchor",
+             "fa-bomb", "fa-bomb",
              "fa-leaf", "fa-leaf",
              "fa-bicycle", "fa-bicycle"];
 
 function makeCard(card) {
-    return '<li class="card" data-card="$(card)"><i class="fa $(cards)"></i></li>';
-    console.log(makeCard)
+    return `<li class="card" data-card="${card}"><i class="fa ${card}"></i></li>`;
 }
 
 /*
@@ -52,24 +51,19 @@ function shuffle(array) {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
- function startGame() {
-   const deck = document.querySelector('.deck');
 
+ function startGame() {
+   let deck = document.querySelector('.deck');
    const cardHTML = shuffle(cards).map(function(card){
-   return makeCard(card);
+       return makeCard(card);
    });
-   moves = 0;
-   //moveCounter.innerHTML = moves;
 
    deck.innerHTML = cardHTML.join('');
  }
+startGame();
 
- startGame();
-
-var allCards = document.querySelectorAll('.card');
-var openCards = [];
-var moves = 0;
-var moveCounter = document.querySelector('.moves');
+let allCards = document.querySelectorAll('.card');
+let openCards = [];
 
 allCards.forEach(function(card){
    card.addEventListener('click', function(e){
@@ -79,23 +73,29 @@ allCards.forEach(function(card){
 
        if (openCards.length == 2){
          if (openCards[0].dataset.card == openCards[1].dataset.card){
-           openCards[0].classList.add('.match', '.open', '.show');
+             openCards[0].classList.add('.match');
+             openCards[0].classList.add('.open');
+             openCards[0].classList.add('.show');
 
-           openCards[1].classList.add('.match', '.open', '.show');
+             openCards[1].classList.add('.match');
+             openCards[1].classList.add('.open');
+             openCards[1].classList.add('.show');
 
-           openCards = [];
-         } else {
-           setTimeout(function(){
+             openCards = [];
+           } else {
+             setTimeout(function(){
              openCards.forEach(function(card){
              card.classList.remove('open', 'show');
          });
-         console.log('allCards');
          openCards = [];
         }, 1000);
       }
-      moves += 1;
-      moveCounter.innerText = moves;
-    }
+     }
     }
    });
  });
+
+//Counting moves function
+
+
+//reset function
