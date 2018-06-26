@@ -10,41 +10,16 @@ let cards = ["fa-diamond", "fa-diamond",
              "fa-leaf", "fa-leaf",
              "fa-bicycle", "fa-bicycle"];
 
-//game timer functions and variables
-let sec = 0;
-let min = 0;
-let timer;
+let moves = 0; //variable forthe move counter
 
-startTimer function() { // starts the timer and sets the interval for it's count
-  timer = setInterval(gameTimer, 1000);
-}
-
-stopTimer function(){
-  clearInterval(timer);
-  sec = 0;
-  min = 0;
-}
-
-gameTimer function (){  //adds secs and minutes to html class .gameTimer
-  sec++
-
-  if (sec < 10) {
-    sec = '0${sec}';
-  }
-
-  if (sec >= 60) {
-    min++
-    sec = "00";
-  }
-  document.querySelector('game-timer').innerHTML = "0" + min + ":" + sec;
-}
-
-
+let clockOff = true;
+let time = 0;
+let clockId;
+//const minutes = Math.floor(time / 60);
+//const seconds = time % 60;
 
 //creates card element html to use in grid
-function makeCard(card) {
-    return `<li class="card" data-card="${card}"><i class="fa ${card}"></i></li>`;
-}
+
 
 /*
  * Display the cards on the page
@@ -52,8 +27,6 @@ function makeCard(card) {
  *   - loop through each card and create its HTML
  *   - add each card's HTML to the page
  */
-
-
 
 
 // Shuffle function from http://stackoverflow.com/a/2450976
@@ -102,8 +75,12 @@ allCards.forEach(function(card){
      if (!card.classList.contains('open') && !card.classList.contains('show') && !card.classList.contains('match')){
        openCards.push(card);
        card.classList.add('open', 'show');
+       if (clockOff) {
+         startClock();
+         clockOff = false;
+       }
 
-       if (openCards.length == 2){
+       if (openCards.length > 2){
          if (openCards[0].dataset.card == openCards[1].dataset.card){
              openCards[0].classList.add('.match');
              openCards[0].classList.add('.open');
@@ -119,6 +96,8 @@ allCards.forEach(function(card){
              openCards.forEach(function(card){
              card.classList.remove('open', 'show');
          });
+         addMove();
+         checkScore();
          openCards = []; //clears openCards after a non-match
         }, 1000);
       }
@@ -127,7 +106,76 @@ allCards.forEach(function(card){
    });
  });
 
+ function makeCard(card) {
+     return `<li class="card" data-card="${card}"><i class="fa ${card}"></i></li>`;
+ }
+
+//timer function
+
+function startClock() {
+    clockId = setInterval(() => {
+    time++;
+    displayTime();
+    }, 1000);
+    console.log(startClock);
+}
+
+function displayTime() {
+  const clock = document.querySelector('.clock');
+  clock.innerHTML = time;
+  console.log(time);
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
+  if (seconds < 10) {
+    clock.innerHTML = '${minutes}:0${seconds}';
+  } else {
+    clock.innerHTML = '${minutes}:${seconds}';
+  }
+  console.log(displayTime);
+}
+
+function stopClock(){
+  clearInterval(clockId);
+}
+
 //Counting moves function
+function addMove(){
+  moves++;
+  const movesText = document.querySelector('.moves');
+  movesText.innerHTML = moves;
+}
 
+//Score function
+function checkScore() {
+  if (moves === 16 || moves === 24) {
+    hideStar();
+  }
+}
 
+function hideStar() {
+  const starList = document.querySelectorAll('.stars li');
+  for (star of starList) {
+    if (star.style.display !== 'none') {
+      star.style.display = 'none';
+      break;
+    }
+  }
+}
+
+//modal funtions
+
+function toggleModal() {
+  const modal = document.querySelector('.modal_background');
+  modal.classList.toggle('hide');
+}
+writeModalStats();
+toggleModal(); //open modal
+toggleModal(); //closes modal
+
+function writeModalStats(){
+  const timeStat = document.querySelector('.modal_time');
+  const clockTime = document.querySelector('.clock').innerHTML;
+
+  timeStat.innerHTML = 'Time = ${clockTime}';
+}
 //reset function
